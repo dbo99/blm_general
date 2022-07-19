@@ -30,23 +30,7 @@ ts_plot <- function(df, start_date, end_date) {
 ggplot(df %>% filter( date >= start_date, date <= end_date), aes(x = date_time,
       y = value, color = scenario, linetype=scenario)) + geom_line()}
 
+readKylesdailyFNFcsv <- function(file) {
+  read_csv(file) %>% transmute(date = `Date (ending 12 UTC)`, kcfsd = `Flow (KCFS)`, res = paste0(file), res = substr(res,1,5))}
 
-#rankplottest <- function(df) {
-#  df %>%  
-#    ggplot(aes(x = reorder_within(sjwyt, -scenariodiff, wy), y = scenariodiff, fill = wm, 
-#              # label = round(mnanntaf_perav, 0)
-#               )) + 
-#    geom_bar(position = "dodge",stat = "position_dodge") + 
-#    theme_gray()   + guides(colour = guide_legend(override.aes = list(size=2))) + theme(plot.margin=grid::unit(c(8,8,8,8), "mm")) +
-#    ylab("taf") + 
-#    scale_x_reordered() +
-#   facet_wrap(~sjwyt, nrow = 1, scales = "free_x") +
-#    theme(axis.title.x=element_blank(),axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
-#    #theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-#    scale_y_continuous(sec.axis = dup_axis(name = NULL) )+
-#   # scale_fill_manual(values = df_cols)+
-#    ggtitle("fuck yeah")
-#}
-              #    C        D       BN         AN             W
-#labelcols <- c("coral4", "red", "orange", "light blue", "dark blue")
 
