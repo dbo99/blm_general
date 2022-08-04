@@ -3,12 +3,12 @@
 
 
 ridgelinethickness <- 0.00000001
-p <- ggplot(df %>% filter(res == "SHDC1" | res == "PFTC1"), aes(dowy, wy, group = as.factor(wy), height = kcfsd, fill = mafwysum )) + 
+p <- ggplot(df %>% filter(res == "SHDC1"), aes(dowy, wy, group = as.factor(wy), height = kcfsd, fill = mafwysum )) + 
   geom_ridgeline_gradient(scale = .05, min_height = -3500, size = ridgelinethickness, alpha = 0.5) + 
   #scale_fill_gradient(colors=turbo())  +
   # scale_fill_viridis(option="turbo", name = "cfsd     ", direction = -1) +
   scale_fill_viridis( name = "maf     ", direction = 1) +
-  # facet_wrap(~scenario, ncol = 1) +
+  # facet_wrap(~scenario, ncol = 1) + %>%
   scale_x_continuous(expand = c(0.02,0.02),
                      breaks = c(1,32,62,93,124,152,183,213,244,274,305,336, 365) 
                      ,labels = c("O", "N", "D", "J", "F", "M", "A","M","J","J","A", "S", "O"),
@@ -17,13 +17,24 @@ p <- ggplot(df %>% filter(res == "SHDC1" | res == "PFTC1"), aes(dowy, wy, group 
   scale_y_continuous(expand = c(0,0),
                      breaks = seq(from = 1945, to = 2022, by = 5),
                      #labels = sjrwytype$wy_wt,
-                     sec.axis = dup_axis(name = NULL)) + labs(x = NULL) + facet_grid(~name) +
-  ggtitle("Lake Shasta vs Pine Flat\nFNF Volume per water wear (forecast volume used for 2022)") +
-   geom_vline(xintercept = 183, linetype = "dashed", color = "red") +
-  geom_vline(xintercept = 305, linetype = "dashed", color = "red")
+                     sec.axis = dup_axis(name = NULL)) + labs(x = NULL) + facet_grid(~name) +#+
+  ggtitle("Full natural flow (FNF) *annual* inflow volume (forecast volume used\n for WY 2022)") 
+   #geom_vline(xintercept = 183, linetype = "dashed", color = "red") +
+#  geom_vline(xintercept = 305, linetype = "dashed", color = "red")
 p
-ggsave("shasta&pine.jpg", width = 13.5, height  = 7.5, dpi = 300, units = "in")
+ggsave("shasta.jpg", width = 13.5, height  = 7.5, dpi = 300, units = "in")
 
+p2 <- ggplot(df_3yrvol, aes(endyear, maf, color = maf)) + geom_line(color = "gray") + geom_point() + 
+      #gghighlight(endyear == 2022) + 
+      labs(y = "maf", x = "end water year of 3yr period") + scale_y_continuous(sec.axis = dup_axis(name = NULL)) +
+       facet_grid(~res2) +   scale_color_viridis( name = "maf     ", direction = 1) +
+       ggtitle("*Three year* cumulative FNF inflow sum") 
+p2
+
+p3 <- p | p2 
+#p3 <- p3 #+ ggtitle("Lake Shasta, full natural inflow volume per water wear (forecast volume used for 2022)")
+p3
+ggsave("shastatwitter.jpg", width = 13.5, height  = 7.5, dpi = 300, units = "in")
 ############ for 15 basin total
 head(df1980_15restotal)
 p <- ggplot(df1980_15restotal, aes(dowy, wy, group = as.factor(wy), height = maf, fill = totalvol_maf )) + 

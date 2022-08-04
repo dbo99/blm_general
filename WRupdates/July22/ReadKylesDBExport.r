@@ -171,10 +171,12 @@ df_3yrvol_w <- read_csv("df_wysum_dbo_csv.csv")
 head(df_3yrvol_w)
 tail(df_3yrvol_w)
 df_3yrvol <- read_csv("df_wysum_dbo_csv.csv") %>% pivot_longer(!wys, names_to = "res") %>% 
-              filter(res == "all") %>% transmute(wys, res, maf = value, endyear = str_sub(wys,-4,-1)) 
-df_3yrvol <- df_3yrvol %>% mutate(endyear = as.integer(endyear)) %>% filter(endyear >= 1982)
+              filter(res == "shdc1") %>% transmute(wys, res,res2 = "Shasta", maf = value, endyear = str_sub(wys,-4,-1)) 
+df_3yrvol <- df_3yrvol %>% mutate(endyear = as.integer(endyear)) #%>% filter(endyear >= 1982)
                                                  
 head(df_3yrvol)
 tail(df_3yrvol)
-ggplot(df_3yrvol, aes(endyear, maf)) + geom_point()
+
+
+
 
