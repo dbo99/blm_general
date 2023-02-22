@@ -48,13 +48,50 @@ head(pz_pos_ts)
 
 pz_pos_ts <- pz_pos_ts %>% mutate(ft_bgs = depblotoc - stickup, elev1 = gelev1 + stickup - depblotoc,
                                   elev2 = gelev2 + stickup - depblotoc, year = year(date), yday = yday(date),
-                                  bl_depchange = depblotoc - bl_dpblotoc)
+                                  bl_depchange = bl_dpblotoc - depblotoc, 
+                                  feb_bl_depchange = feb_bl_dpblotoc - depblotoc,
+                                  decimal_date = decimal_date(date))
 head(pz_pos_ts)
+xscale_breaks = c( 2011.085, 2011.581, 
+                   2012.085, 2012.581, 
+                   2013.085, 2013.581,
+                   2014.085, 2014.581, 
+                   2015.085, 2015.581, 
+                   2016.085, 2016.581,
+                   2017.085, 2017.581, 
+                   2018.085, 2018.581, 
+                   2019.085, 2019.581, 
+                   2020.085, 2020.581,
+                   2021.085, 2021.581, 
+                   2022.085, 2022.581, 
+                             2023.085)
 
-p1 <- ggplot(pz_pos_ts, aes(x = date, y = bl_depchange, color = piezo_nn)) + geom_line() #+ facet_wrap(~piezo_nn, ncol = 1)
+xscale_labels = c( "2/1/2011", "8/1/2011",
+                   "2/1/2012", "8/1/2012",
+                   "2/1/2013", "8/1/2013",
+                   "2/1/2014", "8/1/2014",  
+                   "2/1/2015", "8/1/2015",  
+                   "2/1/2016", "8/1/2016",  
+                   "2/1/2017", "8/1/2017",  
+                   "2/1/2018", "8/1/2018",  
+                   "2/1/2019", "8/1/2019",  
+                   "2/1/2020", "8/1/2020",  
+                   "2/1/2021", "8/1/2021",  
+                   "2/1/2022", "8/1/2022",  
+                               "2/1/2023")
+                  
+#decimal_date(mdy("2/1/2011")) - make start and end months of timeseries similar..last measurement was feb
+
+p1 <- ggplot(pz_pos_ts %>% filter(decimal_date > 2011.085), aes(x = decimal_date, y = feb_bl_depchange, color = piezo_nn)) + geom_point() + facet_wrap(~piezo_nn, ncol = 1, scales = "free_y") +
+      #ggplot(pz_pos_ts , aes(x = decimal_date, y = feb_bl_depchange, color = piezo_nn)) + geom_point() + facet_wrap(~piezo_nn, ncol = 1, scales = "free_y") +
+  geom_hline(yintercept = 0, color = "black") + scale_x_continuous(breaks = xscale_breaks, labels = xscale_labels) +   geom_hline(yintercept = 0, color = "black") + 
+              geom_smooth(method = lm, se = FALSE, size = .5) + 
+              geom_vline(xintercept = 2011.085, color = "red") +
+              geom_vline(xintercept = 2023.085, color = "red") #+ theme(axis.text.x = element_text(angle = 90))
 p1
-ggsave("explore1.pdf", dpi = 300, width = 25, height = 12, units = "in") 
+ggsave("explore3.pdf", dpi = 300, width = 25, height = 12, units = "in") 
 
 p1ly <- plotly()
 
+decimal_date(mdy("2/1/2011"))
 
