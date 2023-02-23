@@ -112,7 +112,7 @@ xscale_labels = c( "2/1/2011", "8/1/2011",
 
 
 
-
+{
 feb_bl <- ggplot(pz_pos_ts %>% filter(decimal_date > 2011.085), aes(x = decimal_date, y = feb_bl_depchange, color = piezo_nn)) + geom_point() + facet_wrap(~piezo_nn, ncol = 1, scales = "free_y") +
       #ggplot(pz_pos_ts , aes(x = decimal_date, y = feb_bl_depchange, color = piezo_nn)) + geom_point() + facet_wrap(~piezo_nn, ncol = 1, scales = "free_y") +
   geom_hline(yintercept = 0, color = "black") + scale_x_continuous(breaks = xscale_breaks, labels = xscale_labels) +   geom_hline(yintercept = 0, color = "black") + 
@@ -120,14 +120,14 @@ feb_bl <- ggplot(pz_pos_ts %>% filter(decimal_date > 2011.085), aes(x = decimal_
               geom_vline(xintercept = 2011.085, color = "red") +
               geom_vline(xintercept = 2023.085, color = "red")  + #+ theme(axis.text.x = element_text(angle = 90))
               theme(legend.position = "none") + labs(title = "Carson Slough BLM Piezometers", 
-                                                     subtitle = "water table change relative to baseline data (Feb '11). Plots ordered generally upgradient to downgradient", 
-                                                     caption = "Feb 2023. Transducer data or manual measurements pre-Feb '11 not included.(free y-axis)") +
+                                                     subtitle = "water table change relative to baseline data (Feb '11). Plots ordered generally upgradient to downgradient.(free y-axis)", 
+                                                     caption = "Feb 2023. Transducer data or manual measurements pre-Feb '11 not included.") +
               labs(x = "date", y = "change in feet relative to February 2011 (or closest available) measurement") + 
               scale_y_continuous(sec.axis = dup_axis(name = NULL))
 feb_bl
-ggsave("feb11baseline_free_y.pdf", dpi = 300, width = 17, height = 11, units = "in") 
+ggsave("timeseries_baseline_diff_free_y.pdf", dpi = 300, width = 17, height = 11, units = "in") }
 
-
+{
 feb_bl_fxd <- ggplot(pz_pos_ts %>% filter(decimal_date > 2011.085), aes(x = decimal_date, y = feb_bl_depchange, color = piezo_nn)) + 
   geom_point() + facet_wrap(~piezo_nn, ncol = 1) +
   #ggplot(pz_pos_ts , aes(x = decimal_date, y = feb_bl_depchange, color = piezo_nn)) + geom_point() + facet_wrap(~piezo_nn, ncol = 1, scales = "free_y") +
@@ -137,19 +137,19 @@ feb_bl_fxd <- ggplot(pz_pos_ts %>% filter(decimal_date > 2011.085), aes(x = deci
   geom_vline(xintercept = 2011.085, color = "red") +
   geom_vline(xintercept = 2023.085, color = "red")  + #+ theme(axis.text.x = element_text(angle = 90))
   theme(legend.position = "none") + labs(title = "Carson Slough BLM Piezometers", 
-                                         subtitle = "water table change relative to baseline data (Feb '11). Plots ordered generally upgradient to downgradient", 
-                                         caption = "Feb 2023. Transducer data or manual measurements pre-Feb '11 not included. (fixed y-axis)") +
+                                         subtitle = "water table change relative to baseline data (Feb '11). Plots ordered generally upgradient to downgradient. (fixed y-axis)", 
+                                         caption = "Feb 2023. Transducer data or manual measurements pre-Feb '11 not included. ") +
   labs(x = "date", y = "change in feet relative to February 2011 (or closest available) measurement") + 
   scale_y_continuous(sec.axis = dup_axis(name = NULL))
 feb_bl_fxd
-ggsave("feb11baseline_fixed_y.pdf", dpi = 300, width = 17, height = 11, units = "in") 
+ggsave("timeseries_baseline_diff_fixed_y.pdf", dpi = 300, width = 17, height = 11, units = "in") }
 
 ############################
 ########## water table
 ###############################
 
 
-
+{
 wtabl <- ggplot(pz_pos_ts, aes(x = decimal_date, y = elev2, color = piezo_nn)) + geom_point() + 
   #facet_wrap(~piezo_nn, ncol = 1, scales = "free_y") +
   #ggplot(pz_pos_ts , aes(x = decimal_date, y = feb_bl_depchange, color = piezo_nn)) + geom_point() + facet_wrap(~piezo_nn, ncol = 1, scales = "free_y") +
@@ -165,14 +165,14 @@ wtabl <- ggplot(pz_pos_ts, aes(x = decimal_date, y = elev2, color = piezo_nn)) +
         scale_y_continuous(breaks = c(2034, 2036, 2038, 2040, 2042, 2044, 2046, 2048, 2050, 2052, 2054, 2056 ),
                            sec.axis = dup_axis(name = NULL))
 wtabl
-ggsave("watertable.pdf", dpi = 300, width = 17, height = 11, units = "in") 
+ggsave("timeseries_elevation.pdf", dpi = 300, width = 17, height = 11, units = "in") }
 
 
 ############################
 ########## ft bgs
 ###############################
 
-
+{
 ft_bgs_free <- ggplot(pz_pos_ts, aes(x = decimal_date, y = ft_bgs*(-1), color = piezo_nn)) + geom_point() + facet_wrap(~piezo_nn, ncol = 1, scales = "free_y") +
   #ggplot(pz_pos_ts , aes(x = decimal_date, y = feb_bl_depchange, color = piezo_nn)) + geom_point() + facet_wrap(~piezo_nn, ncol = 1, scales = "free_y") +
   geom_hline(yintercept = 0, color = "black") + scale_x_continuous(breaks = xscale_breaks, labels = xscale_labels) +   geom_hline(yintercept = 0, color = "black") + 
@@ -180,12 +180,14 @@ ft_bgs_free <- ggplot(pz_pos_ts, aes(x = decimal_date, y = ft_bgs*(-1), color = 
   geom_vline(xintercept = 2011.085, color = "red") +
   geom_vline(xintercept = 2023.085, color = "red") + #+ theme(axis.text.x = element_text(angle = 90))
   labs(title = "Carson Slough BLM Piezometers", 
-       subtitle = "timeseries of groundwater depth", 
-       caption = "Feb 2023. Transducer data not included.(free y-axis)") +
-  labs(x = "date", y = "feet relative to ground surface") 
+       subtitle = "timeseries of groundwater depth, free y-axis", 
+       caption = "Feb 2023. Transducer data not included.") +
+  labs(x = "date", y = "feet relative to ground surface") +  scale_y_continuous(sec.axis = dup_axis(name = NULL))
 ft_bgs_free
-ggsave("ft_bgs_free.pdf", dpi = 300, width = 17, height = 11, units = "in") 
+ggsave("timeseries_depth_free_y.pdf", dpi = 300, width = 17, height = 11, units = "in") }
 
+
+{
 ft_bgs <- ggplot(pz_pos_ts, aes(x = decimal_date, y = ft_bgs*(-1), color = piezo_nn)) + geom_point() + 
   facet_wrap(~piezo_nn, ncol = 1) +
   #ggplot(pz_pos_ts , aes(x = decimal_date, y = feb_bl_depchange, color = piezo_nn)) + geom_point() + facet_wrap(~piezo_nn, ncol = 1, scales = "free_y") +
@@ -194,27 +196,40 @@ ft_bgs <- ggplot(pz_pos_ts, aes(x = decimal_date, y = ft_bgs*(-1), color = piezo
   geom_vline(xintercept = 2011.085, color = "red") +
   geom_vline(xintercept = 2023.085, color = "red") + #+ theme(axis.text.x = element_text(angle = 90))
   labs(title = "Carson Slough BLM Piezometers", 
-       subtitle = "timeseries of groundwater depth", 
-       caption = "Feb 2023. Transducer data not included.(fixed y-axis)") +
-  labs(x = "date", y = "feet relative to ground surface") 
+       subtitle = "timeseries of groundwater depth, fixed y-axis", 
+       caption = "Feb 2023. Transducer data not included.") +
+  labs(x = "date", y = "feet relative to ground surface") +  scale_y_continuous(sec.axis = dup_axis(name = NULL))
 ft_bgs
-ggsave("ft_bgs_fixed.pdf", dpi = 300, width = 17, height = 11, units = "in") 
+ggsave("timeseries_depth_fixed_y.pdf", dpi = 300, width = 17, height = 11, units = "in") }
 
 
 ############################
 ########## box plots
 ###############################
 
-
+{
 monthboxes <- ggplot(pz_pos_ts, aes(mon_name, y = ft_bgs*(-1), group = month, color = piezo_nn)) + geom_boxplot() + 
               facet_wrap(~piezo_nn) +   labs(x = "month", y = "feet relative to ground surface") +
   labs(title = "Carson Slough BLM Piezometers", 
        subtitle = "box plots of groundwater depth", 
        caption = "Feb 2023. Transducer data not included.")
 monthboxes
-ggsave("mon_boxes.pdf", dpi = 300, width = 17, height = 11, units = "in") 
+ggsave("boxplots_piezosmonthly_depth.pdf", dpi = 300, width = 17, height = 11, units = "in") }
 
-ggplotly(monthboxes)
+ggplotly(monthboxes) 
+
+
+
+{
+piezboxes <- ggplot(pz_pos_ts, aes(mon_name, y = ft_bgs*(-1), group = piezo_nn, color = piezo_nn)) + geom_boxplot() + 
+  facet_wrap(~piezo_nn) +   labs(x = "month", y = "feet relative to ground surface") +
+  labs(title = "Carson Slough BLM Piezometers", 
+       subtitle = "box plots of groundwater depth", 
+       caption = "Feb 2023. Transducer data not included.")}
+piezboxes
+ggsave("boxplots_piezos_depth.pdf", dpi = 300, width = 17, height = 11, units = "in") 
+
+ggplotly(piezboxes)
 
 ############################
 ########## plotly elev
