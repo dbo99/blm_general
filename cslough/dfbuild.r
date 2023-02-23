@@ -207,29 +207,29 @@ ggsave("timeseries_depth_fixed_y.pdf", dpi = 300, width = 17, height = 11, units
 ########## box plots
 ###############################
 
-{
-monthboxes <- ggplot(pz_pos_ts, aes(mon_name, y = ft_bgs*(-1), group = month, color = piezo_nn)) + geom_boxplot() + 
-              facet_wrap(~piezo_nn) +   labs(x = "month", y = "feet relative to ground surface") +
+
+
+piezboxes <- ggplot(pz_pos_ts, aes(piezo_nn, ft_bgs*(-1), color = piezo_nn)) + geom_boxplot() + 
+  #facet_wrap(~piezo_nn) +   
+  labs(x = "piezometer", y = "feet relative to ground surface") +
   labs(title = "Carson Slough BLM Piezometers", 
-       subtitle = "box plots of groundwater depth", 
+       subtitle = "box plots of groundwater depth, all months", 
        caption = "Feb 2023. Transducer data not included.")
-monthboxes
-ggsave("boxplots_piezosmonthly_depth.pdf", dpi = 300, width = 17, height = 11, units = "in") }
-
-ggplotly(monthboxes) 
-
-
-
-{
-piezboxes <- ggplot(pz_pos_ts, aes(mon_name, y = ft_bgs*(-1), group = piezo_nn, color = piezo_nn)) + geom_boxplot() + 
-  facet_wrap(~piezo_nn) +   labs(x = "month", y = "feet relative to ground surface") +
-  labs(title = "Carson Slough BLM Piezometers", 
-       subtitle = "box plots of groundwater depth", 
-       caption = "Feb 2023. Transducer data not included.")}
 piezboxes
-ggsave("boxplots_piezos_depth.pdf", dpi = 300, width = 17, height = 11, units = "in") 
+ggsave("boxplots_depth.pdf", dpi = 300, width = 17, height = 11, units = "in") 
 
 ggplotly(piezboxes)
+
+{
+  monthboxes <- ggplot(pz_pos_ts, aes(mon_name, y = ft_bgs*(-1), group = month, color = piezo_nn)) + geom_boxplot() + 
+    facet_wrap(~piezo_nn) +   labs(x = "month", y = "feet relative to ground surface") +
+    labs(title = "Carson Slough BLM Piezometers", 
+         subtitle = "box plots of groundwater depth", 
+         caption = "Feb 2023. Transducer data not included.")
+  monthboxes
+  ggsave("boxplots_depth_monthly.pdf", dpi = 300, width = 17, height = 11, units = "in") }
+
+ggplotly(monthboxes) 
 
 ############################
 ########## plotly elev
