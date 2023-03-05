@@ -49,7 +49,7 @@ head(usfslands)
 swrcb_l<- readOGR(".", "swrcb_l") %>% st_as_sf() %>% transmute(Obj = objectid, name_swrcb = waterbody_)
 #head(swrcb_nl)
 
-swrcb_nl <- readOGR(".", "swrcb_nl") %>% st_as_sf() %>% transmute(Obj = objectid, swrcb_name = waterbody_)
+swrcb_nl <- readOGR(".", "swrcb_nl") %>% st_as_sf() %>% transmute(Obj = objectid, name_swrcb = waterbody_)
 head(swrcb_nl)
 
 nhd <- readOGR(".", "nhd") %>% st_as_sf()  #%>% transmute( Permanent_)
@@ -59,6 +59,9 @@ huc12 <- readOGR(".", "huc12") %>% st_as_sf()  %>% transmute( Name)
 
 huc14 <- readOGR(".", "huc14") %>% st_as_sf()# %>% transmute(Name)
 
+huc12_panoche <-  readOGR(".", "panoche_huc12") %>% st_as_sf() %>% transmute(Name)
+huc12_humbug <-  readOGR(".", "humbug_huc12") %>% st_as_sf()  %>% transmute(Name)
+huc12_fall <-  readOGR(".", "fallriver_huc12") %>% st_as_sf() %>% transmute(Name)
 #}
 
 #mapviewOptions(fgb = FALSE)
@@ -84,15 +87,24 @@ mapview(swrcb_nl) #yes
 mapview(swrcb_l) #yes
 mapview(nhd) #yes
 mapview(huc14) #blank
+mapview(huc12_fall)
+mapview(huc12_panoche)
+mapview(huc12_humbug)
 
 
 
-mapview(list(blmca, usfslands, swrcb_nl, swrcb_l, nhd, huc14, huc12), 
-        layer.name = c("blm", "usfs" ,"notlisted", "listed", "nhd_all", "huc14_justhumbug", "huc12_all3"), 
-        legend = rep("False", 7),
-        col.regions= c("yellow","green", "blue", "red", "blue", "pink", "purple"),
+mapview(list(blmca, usfslands, swrcb_nl, swrcb_l, nhd, huc14, huc12_fall,
+             huc12_humbug, huc12_panoche), 
+        layer.name = c("blm", "usfs" ,"notlisted_allCa", "listed_allCa", "nhd_fall_hmbg_pnche", "huc14_justhumbug", 
+                       "huc12_fallriver", "huc12_humbug", "huc12_panoche"), 
+        legend = rep("False", 9),
+        col.regions= c("yellow","green", "dark blue", "red", "blue", "pink",
+                       "purple", "purple", "purple"),
+        color= c("yellow","green", "dark blue", "red", "blue", "pink",
+                 "purple", "purple", "purple"),
+        lwd = c(1,1,1,1,1,1,1,1,1),
       #  col.regions= c("yellow","green", "blue", "red", "blue", "pink", "purple"),
-        alpha.regions= c(0.3,0.3, 0.3, 0.3, 0.3, 0.08, 0.08))
+        alpha.regions= c(0.3,0.3, 0.3, 0.3, 0.3, 0.3, 0.12, 0.12, 0.12))
 
 #mapview(fo, zcol = "Office") + mapview(rfo, color = "red") + mapview(usgs, color = "green") 
 
