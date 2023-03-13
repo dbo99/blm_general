@@ -36,39 +36,35 @@ grp <- c(  "newzones", "allzones", "p19p13_p_perdiff",
 
 
 #{
-blmca <- readOGR(".", "blmca_lands_wsonly") %>% st_as_sf() #%>% transmute(Obj = OBJECTID)
+blmca <- readOGR(".", "blmlands") %>% st_as_sf() #%>% transmute(Obj = OBJECTID)
 #sf::st_is_valid(nfo)
-#head(blmca)
+head(blmca)
 #plot(blmca)
 
-usfslands <- readOGR(".", "usfs_lands_wsonly") %>% st_as_sf() #%>% transmute(Obj = OBJECTID)
-#head(usfslands)
+usfslands <- readOGR(".", "usfslands") %>% st_as_sf() #%>% transmute(Obj = OBJECTID)
+head(usfslands)
 #plot(usfslands)
 
 
-swrcb_l<- readOGR(".", "swrcb_lstd_wsonly") %>% st_as_sf() %>% transmute(Obj = objectid, name_swrcb = waterbody_)
+swrcb_l<- readOGR(".", "swrcb_l") %>% st_as_sf() %>% transmute(Obj = objectid, name_swrcb = waterbody_)
 #head(swrcb_nl)
 
-swrcb_nl <- readOGR(".", "swrcb_nl_wsonly") %>% st_as_sf() %>% transmute(Obj = objectid, name_swrcb = waterbody_)
-#head(swrcb_nl)
+swrcb_nl <- readOGR(".", "swrcb_nl") %>% st_as_sf() %>% transmute(Obj = objectid, swrcb_name = waterbody_)
+head(swrcb_nl)
 
 nhd <- readOGR(".", "nhd") %>% st_as_sf()  #%>% transmute( Permanent_)
 #head(nhd)
 
-huc12_basinsofinterest <- readOGR(".", "huc12") %>% st_as_sf()  %>% transmute( Name)
+huc12 <- readOGR(".", "huc12") %>% st_as_sf()  %>% transmute( Name)
 
 huc14 <- readOGR(".", "huc14") %>% st_as_sf()# %>% transmute(Name)
 
-huc12_panoche <-  readOGR(".", "panoche_huc12") %>% st_as_sf() %>% transmute(Name)
-huc12_humbug <-  readOGR(".", "humbug_huc12") %>% st_as_sf()  %>% transmute(Name)
-huc12_fall <-  readOGR(".", "fallriver_huc12") %>% st_as_sf() %>% transmute(Name) %>%
-                filter(Name != "Whitehorse Flat Reservoir")
 #}
 
-mapviewOptions(fgb = FALSE)
+#mapviewOptions(fgb = FALSE)
 mapviewOptions(basemaps = c(
   # "Stamen.TopOSMRelief", 
-  "Stamen.Terrain",
+  #"Stamen.Terrain",
   "Esri.WorldTopoMap" , 
   "Esri.WorldImagery" , 
   #"USGS.USTopo",
@@ -81,43 +77,33 @@ mapviewOptions(basemaps = c(
   # "USGS.USTopo"))
   "OpenStreetMap"))
 
-#mapview(huc12, alpha = 0.05, alpha.regions = 0.3, legend = FALSE) #yes
-#mapview(blmca) #no
-#mapview(usfslands) #no
-#mapview(swrcb_nl) #yes
-#mapview(swrcb_l) #yes
-#mapview(nhd) #yes
-#mapview(huc14) #blank
-#mapview(huc12_fall)
-#mapview(huc12_panoche)
-#mapview(huc12_humbug)
+mapview(huc12, alpha = 0.05, alpha.regions = 0.3, legend = FALSE) #yes
+mapview(blmca) #no
+mapview(usfslands) #no
+mapview(swrcb_nl) #yes
+mapview(swrcb_l) #yes
+mapview(nhd) #yes
+mapview(huc14) #blank
 
 
 
-map <- mapview(list(huc12_basinsofinterest, blmca, usfslands, swrcb_nl, swrcb_l, nhd, huc14, huc12_fall,
-             huc12_humbug, huc12_panoche), 
-        layer.name = c("huc12_basinsofinterest",  "blm", "usfs" ,"swrcb_notlisted", "swrcb_listed", "nhd_fall_hmbg_pnche", "huc14_justhumbug", 
-                       "huc12_fallriver", "huc12_humbug", "huc12_panoche"), 
-       
-        legend = rep("False", 10),
-        col.regions= c("maroon", "yellow","green", "dark blue", "red", "blue", "pink",
-                       "purple", "purple", "purple"),
-        color= c("maroon",  "yellow","green", "dark blue", "red", "blue", "pink",
-                 "purple", "purple", "purple"),
-        lwd = c(1,1,1,1,1,1,1,1,1,1),
+mapview(list(blmca, usfslands, swrcb_nl, swrcb_l, nhd, huc14, huc12), 
+        layer.name = c("blm", "usfs" ,"notlisted", "listed", "nhd_all", "huc14_justhumbug", "huc12_all3"), 
+        legend = rep("False", 7),
+        col.regions= c("yellow","green", "blue", "red", "blue", "pink", "purple"),
       #  col.regions= c("yellow","green", "blue", "red", "blue", "pink", "purple"),
-        alpha.regions= c(0.3, 0.3,0.3, 0.3, 0.3, 0.3, 0.3, 0.12, 0.12, 0.12), hide = TRUE)
+        alpha.regions= c(0.3,0.3, 0.3, 0.3, 0.3, 0.08, 0.08))
 
 #mapview(fo, zcol = "Office") + mapview(rfo, color = "red") + mapview(usgs, color = "green") 
 
-#aptypes = c(#"Stamen.TonerLite", 
-# #"Stamen.Terrain", 
-# "Stamen.TopOSMRelief", 
-# "Esri.WorldTopoMap" , 
-# "Esri.WorldPhysical", 
-# "OpenTopoMap" ,
-# "NASAGIBS.ModisTerraTrueColorCR",
-# "USGS.USTopo")
+maptypes = c(#"Stamen.TonerLite", 
+  #"Stamen.Terrain", 
+  "Stamen.TopOSMRelief", 
+  "Esri.WorldTopoMap" , 
+  "Esri.WorldPhysical", 
+  "OpenTopoMap" ,
+  "NASAGIBS.ModisTerraTrueColorCR",
+  "USGS.USTopo")
 
 
-mapshot(map, url = "swrcb303sed_blmca_usfs.html")
+mapshot(map, url = "springs.html")
