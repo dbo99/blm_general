@@ -256,3 +256,5 @@ ggplotly(p2, hoverinfo = c("piezo_nn", "depblotoc", "gelev2", "ft_bgs", "elev2",
 #p2ly <- ggplotly(p2, hoverinfo = c("piezo_nn", "depblotoc", "gelev2", "ft_bgs", "elev2", "notes"))
 #htmlwidgets::saveWidget(as_widget(p2ly), "gw_depth.html")
 
+
+#rm(list = ls())
