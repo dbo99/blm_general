@@ -13,17 +13,17 @@ library(dataRetrieval)
 library(ggridges)
 library(viridis)
 source("fun_defs.r")
-## USGS streamguage 10251300 amargosa at tecopa 
-# USGS streamgage 10251330 amargosa above china wash
+## USGS streamguage 10251300 Amrgsa at tecopa 
+# USGS streamgage 10251330 Amrgsa above china wash
 #USGS streamgage 10251335 willow spring by willow ck
 #USGS streamgage 10251290 borehole spring
 #USGSstreamgage 10251375 agosa at dumont dunes
 site_no <- c(10251300, 10251330, 10251335, 10251290, 10251375)
-siteName <- c("amargosa riv at tecopa", "amargosa riv abv china wash", "willow ck (spring)", 
-              "borehole spring", "amargosa riv at dmnt dunes")
+siteName <- c("Amrgsa R, Tecopa", "Amrgsa R, abv Ch. Wash", "Willow Ck (Spg)", 
+              "Borehole Spring", "Amrgsa R, Dmnt Dunes")
 usgs_numbname <- data.frame(site_no, siteName)
 
-## amargosa at tecopa
+## Amrgsa at tecopa
 siteNumber <- site_no[1]
 dailydataavailable <- whatNWISdata(
   siteNumber = siteNumber,
@@ -35,9 +35,9 @@ startdate <- dailydataavailable$begin_date
 enddate <- dailydataavailable$end_date
 dailyflo <- readNWISdv(siteNumber, parameterCd, startdate, enddate)
 
-amargosa_at_tecopa <- dailyflo
+Amrgsa_at_tecopa <- dailyflo
 
-## amargosa above china wash
+## Amrgsa above china wash
 siteNumber <- site_no[2]
 dailydataavailable <- whatNWISdata(
   siteNumber = siteNumber,
@@ -49,7 +49,8 @@ startdate <- dailydataavailable$begin_date
 enddate <- dailydataavailable$end_date
 dailyflo <- readNWISdv(siteNumber, parameterCd, startdate, enddate)
 
-amargosa_abv_chinawash <- dailyflo
+Amrgsa_abv_chinawash <- dailyflo
+Amrgsa_abv_chinawash <- Amrgsa_abv_chinawash %>% filter(Date >= ymd("2006-10-01"))
 
 ## willow spring (creek)
 siteNumber <- site_no[3]
@@ -79,8 +80,9 @@ enddate <- dailydataavailable$end_date
 dailyflo <- readNWISdv(siteNumber, parameterCd, startdate, enddate)
 
 borehole_spring <- dailyflo
+borehole_spring <- borehole_spring %>% filter(Date >= ymd("2013-10-01"))
 
-## amargosa river at dumont dunes
+## Amrgsa river at dumont dunes
 siteNumber <- site_no[5]
 dailydataavailable <- whatNWISdata(
   siteNumber = siteNumber,
@@ -94,10 +96,10 @@ enddate <- dailydataavailable$end_date
 #dowy <- read_csv("daily_dowy.csv")
 dailyflo <- readNWISdv(siteNumber, parameterCd, startdate, enddate)
 
-amargosa_riv_dmntdunes <- dailyflo
+Amrgsa_riv_dmntdunes <- dailyflo
 
-dailyflo <- rbind(amargosa_at_tecopa, amargosa_abv_chinawash, borehole_spring, willow_spring, amargosa_riv_dmntdunes)
-rm(amargosa_at_tecopa, amargosa_abv_chinawash, borehole_spring, willow_spring, amargosa_riv_dmntdunes)
+dailyflo <- rbind(Amrgsa_at_tecopa, Amrgsa_abv_chinawash, borehole_spring, willow_spring, Amrgsa_riv_dmntdunes)
+rm(Amrgsa_at_tecopa, Amrgsa_abv_chinawash, borehole_spring, willow_spring, Amrgsa_riv_dmntdunes)
 
 
 #{
@@ -142,6 +144,25 @@ df <- right_join(df, usgs_numbname)
 df_annsum <- right_join(df_annsum, usgs_numbname)
 df_monsum <- right_join(df_monsum, usgs_numbname)
 
+
+df$siteName <- factor(df$siteName, levels = c("Borehole Spring", "Amrgsa R, Tecopa",   "Amrgsa R, abv Ch. Wash", "Willow Ck (Spg)",
+                                             "Amrgsa R, Dmnt Dunes"))
+
+
+df_annsum$siteName <- factor(df_annsum$siteName, levels = c("Borehole Spring", "Amrgsa R, Tecopa",  "Amrgsa R, abv Ch. Wash", "Willow Ck (Spg)",
+                                            "Amrgsa R, Dmnt Dunes"))
+
+
+df_monsum$siteName <- factor(df_monsum$siteName, levels = c("Borehole Spring", "Amrgsa R, Tecopa",  "Amrgsa R, abv Ch. Wash", "Willow Ck (Spg)",
+                                            "Amrgsa R, Dmnt Dunes"))
+
+df_annsum <- df_annsum %>% filter(wy != 2024) #not complete year (analyzed in feb)
+df_annsum2 <- df_annsum %>% filter(wy != 2013 && site_no == 10251290) #incomplete year 2013
+
+################################
+########## monthly 
+###############################
+
 ggplot(df_monsum, aes(wm,wywmaf, color = wy, group = wy)) +
   geom_line()   + scale_y_continuous(trans='log10', 
                                      breaks = c(0.1, 1,10,100,1000,10000),
@@ -149,12 +170,31 @@ ggplot(df_monsum, aes(wm,wywmaf, color = wy, group = wy)) +
   
   scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12),
                      labels = c(1,2,3,4,5,6,7,8,9,10,11,12)) +
-  facet_grid(~siteName) +
-  scale_color_viridis() + labs(y = "acre-feet per month", x = "water month (1 = Oct, 12 = Sept)")
+  facet_grid(~siteName, labeller = label_wrap_gen()) +
+  scale_color_viridis() + labs(y = "acre-feet per month", x = "water month (1 = Oct, 12 = Sept)")+
+  ggtitle("Monthly accumulated flow volume in acre-feet")
 
 
+ggsave("Amrgsa_five_gauges_monthlyaf2.jpg", width = 9, height  = 9, dpi = 300, units = "in")
+
+################################
+########## annual
+###############################
+
+ggplot(df_annsum, aes(wy,wyaf, fill = siteName)) +
+  geom_bar(position = "dodge",stat = "identity")  +# scale_y_continuous(trans='log10', 
+                  #                   breaks = c(0.1, 1,10,100,1000,10000),
+                   #                  labels = c(0.1, 1,10,100,1000,10000)) +
+  
+  scale_x_continuous(breaks=  c(1960, 1970, 1980,  1990, 2000, 2010, 2015, 2020, 2023),
+                     labels = c(1960, 1970, 1980,  1990, 2000, 2010, 2015, 2020, 2023)) +
+  facet_wrap(~siteName, ncol = 1, labeller = label_wrap_gen(), scales = "free_y") +
+  #scale_color_viridis() + 
+  labs(y = "acre-feet per year", x = "water year") + theme(legend.position = "none") +
+  ggtitle("Annual accumulated flow volume in acre-feet")
 
 
+ggsave("Amrgsa_five_gauges_annualaf.jpg", width = 9, height  = 9, dpi = 300, units = "in")
 
 
 
@@ -185,14 +225,14 @@ ggplot(df_monsum, aes(wm,wywmaf, color = wy, group = wy)) +
 #                     breaks = seq(from = 1945, to = 2022, by = 5),
 #                     #labels = sjrwytype$wy_wt,
 #                     sec.axis = dup_axis(name = NULL)) + labs(y = NULL) + #facet_grid(~name) +#+
-#  ggtitle("Amargosa River at Tecopa, USGS Station 10251300\nFull period of record (missing data shown),\nDaily mean flow occurrence and acre-ft per water year") 
+#  ggtitle("Amrgsa River at Tecopa, USGS Station 10251300\nFull period of record (missing data shown),\nDaily mean flow occurrence and acre-ft per water year") 
 ##geom_vline(xintercept = 183, linetype = "dashed", color = "red") +
 ##  geom_vline(xintercept = 305, linetype = "dashed", color = "red")
 #ridges
-#ggsave("amargosa_tecopa_dailyflow_ridges.jpg", width = 7, height  = 9, dpi = 300, units = "in")
+#ggsave("Amrgsa_tecopa_dailyflow_ridges.jpg", width = 7, height  = 9, dpi = 300, units = "in")
 #
 #ggplot(annwysum %>% filter(wy!= 2024, wy!=1999), aes(x = wy, y = wyaf, fill = wyaf)) + geom_bar(position = "dodge",stat = "identity") +
-#  ggtitle("Amargosa River at Tecopa, USGS Station 10251300\nFull period of record (missing 1973, 1984-1999),\nWater Year accumulated flow volume") +
+#  ggtitle("Amrgsa River at Tecopa, USGS Station 10251300\nFull period of record (missing 1973, 1984-1999),\nWater Year accumulated flow volume") +
 #  scale_fill_viridis( name = "acre feet"  ) + 
 #  geom_hline(yintercept = median_wy_taf, color = "red") + 
 #  geom_hline(yintercept = mean_wy_taf, color = "red", linetype = "dashed") + 
@@ -207,7 +247,7 @@ ggplot(df_monsum, aes(wm,wywmaf, color = wy, group = wy)) +
 #  scale_x_continuous(breaks=  c(1962, 1970, 1975, 1983, 1990, 1999, 2005, 2010, 2016, 2023),
 #                     labels = c(1962, 1970, 1975, 1983, 1990, 1999, 2005, 2010, 2016,  2023)) +
 #  labs(x = NULL, y = NULL)
-#ggsave("amargosa_tecopa_dailyflow_ridges.jpg", width = 7, height  = 5, dpi = 300, units = "in")
+#ggsave("Amrgsa_tecopa_dailyflow_ridges.jpg", width = 7, height  = 5, dpi = 300, units = "in")
 #
 #
 #annwysum  %>%
