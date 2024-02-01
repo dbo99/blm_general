@@ -48,7 +48,9 @@ df <- right_join(df, monsum)
 df_wywm <- df %>% group_by(wm_wy) %>% summarize(wywmsum = sum(af))
 meandailyflo_por <- mean(df$cfs)
 mean_wy_taf <- mean(annwysum$wyaf)
-median_wy_taf <- median(annwysum$wyaf)
+#mean_wy_taf <- annwysum %>% filter(wy != 1999, wy!= 2024) %>% summarize( mean = mean(wyaf) %>% select(mean)) 
+#mean_wy_taf <- mean(mean_wy_taf$mean))
+#median_wy_taf <- median(annwysum$wyaf)
 #min_wy_taf <- annwysum %>% filter(wy != 2024) %>% min(wyaf)
 min_wy_taf <- 268
 
@@ -74,8 +76,8 @@ ridges <- ggplot(df, aes(dowy, wy, group = as.factor(wy), height = cfs, fill = w
 ridges
 ggsave("amargosa_tecopa_dailyflow_ridges.jpg", width = 7, height  = 9, dpi = 300, units = "in")
 
-ggplot(annwysum %>% filter(wy!= 2024), aes(x = wy, y = wyaf, fill = wyaf)) + geom_bar(position = "dodge",stat = "identity") +
-  ggtitle("Amargosa River at Tecopa, USGS Station 10251300\nFull period of record (missing data shown),\nWater Year accumulated flow volume") +
+ggplot(annwysum %>% filter(wy!= 2024, wy!=1999), aes(x = wy, y = wyaf, fill = wyaf)) + geom_bar(position = "dodge",stat = "identity") +
+  ggtitle("Amargosa River at Tecopa, USGS Station 10251300\nFull period of record (missing 1973, 1984-1999),\nWater Year accumulated flow volume") +
   scale_fill_viridis( name = "acre feet"  ) + 
   geom_hline(yintercept = median_wy_taf, color = "red") + 
   geom_hline(yintercept = mean_wy_taf, color = "red", linetype = "dashed") + 
@@ -87,8 +89,8 @@ ggplot(annwysum %>% filter(wy!= 2024), aes(x = wy, y = wyaf, fill = wyaf)) + geo
   
   scale_y_continuous(breaks = c(0,268, 750,1000,2240, 3000,4000, 5000, 6000, 7000,8000, 9000, 10000, 10792),
                      labels = c(0,268, 750,1000,2240, 3000,4000, 5000, 6000, 7000,8000, 9000, 10000,10792)) + 
-  scale_x_continuous(breaks=  c(1962, 1970, 1975, 1983, 1990, 2000, 2010, 2016, 2023),
-                     labels = c(1962, 1970, 1975, 1983, 1990, 2000, 2010, 2016,  2023)) +
+  scale_x_continuous(breaks=  c(1962, 1970, 1975, 1983, 1990, 1999, 2005, 2010, 2016, 2023),
+                     labels = c(1962, 1970, 1975, 1983, 1990, 1999, 2005, 2010, 2016,  2023)) +
    labs(x = NULL, y = NULL)
 ggsave("amargosa_tecopa_dailyflow_ridges.jpg", width = 7, height  = 5, dpi = 300, units = "in")
 
@@ -106,6 +108,17 @@ ggsave("amargosa_tecopa_dailyflow_ridges.jpg", width = 7, height  = 5, dpi = 300
   #scale_fill_manual(values=df_cols) +
   ggtitle("mean annual (82 yrs)")
 
+ 
+ library(dataRetrieval)
+ sites <- whatNWISsites(
+   bBox = c(-117.0, 32.5, -114.0, 36.5),
+   parameterCd = c("00010", "00060"),
+   hasDataTypeCd = "dv" )
+ sites
+ 
+ 
+
+ 
 
 
 
