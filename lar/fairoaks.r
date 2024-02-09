@@ -30,10 +30,13 @@ head(df)
 df_annpeak <- df %>% filter(wy != 2024) %>% group_by(wy) %>% summarize(peak = max(Flow_Inst)) #%>% arrange(desc(peak))
 df_annpeak
 #write_csv(df_annpeak, "amrcn_fairoaks_wy_instantaneous_peakflow.txt")
-ggplot(df_annpeak, aes(wy, peak)) + geom_bar(stat = "identity") +
+ggplot(df_annpeak, aes(wy, peak/1000)) + geom_bar(stat = "identity") +
   scale_x_continuous(breaks = c(1987, 1997, 2006, 2011, 2017, 2023)) + 
-  labs(x = "water year", y = "peak instantaneous flow rate") + gghighlight(wy == 2017) +
+  scale_y_continuous(breaks = c(10, 30, 50, 85.4, 117 )) + 
+  labs(x = "water year", y = "peak instantaneous flow rate (kcfs)") + gghighlight(wy == 2017) +
   ggtitle("American River at Fair Oaks, 11446500" )
+
+
 
 
 # stage
